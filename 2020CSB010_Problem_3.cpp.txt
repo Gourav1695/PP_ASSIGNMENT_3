@@ -1,0 +1,229 @@
+// 2020CSB010_GOURAV KUMAR SHAW
+
+
+#include <iostream>
+using namespace std;
+
+#ifndef UPPER_MAX
+#define UPPER_MAX 300
+
+#ifndef STATING
+#define STATING 10
+
+
+struct employee
+{
+    string name;
+    int employee_ID;
+    int salary;
+};
+template <class T>
+
+class GrowingStack
+{
+private:
+    /* data */
+    int top;
+    int size;
+    T *arr;
+
+public:
+    GrowingStack<T>() // default constructor
+    {
+        top = -1;
+        size = STATING;
+        arr = new T[STATING];
+    };
+    GrowingStack(int l) // using parameterized constructor
+    {
+        top = -1;
+        size = l;
+        arr = new T[l];
+    };
+    GrowingStack<T>(const GrowingStack<T> &s) // using copy constructor
+    {
+        top = s.top;
+        size = s.size;
+        T *new_arr = new T[s.size];
+        T *c = new_arr;
+        T *d = s.arr;
+        for (int i = 0; i < s.size; i++)
+        {
+            *c++ = *d++;
+        }
+        arr = s.arr;
+    }
+    GrowingStack<T> &operator=(const GrowingStack<T> &rhs) //using  assignment operator
+    {
+        if (this == &rhs)
+        {
+            return *this;
+        }
+        delete[] arr;
+        size = rhs.size;
+        top = rhs.top;
+        T *new_arr = new T[rhs.size];
+        T *c = new_arr;
+        T *d = rhs.arr;
+        for (int i = 0; i < rhs.size; i++)
+        {
+            *c++ = *d++;
+        }
+        arr = new_arr;
+        return *this;
+    }
+    void inflate()
+    {
+        T *new_arr = new T[size + STATING];
+        for (int i = 0; i < size; i++)
+        {
+            new_arr[i] = arr[i];
+        }
+        size += STATING;
+        arr = new_arr;
+    }
+    void inflate(int n)
+    {
+        int *new_arr = new int[size + n];
+        for (int i = 0; i < size; i++)
+        {
+            new_arr[i] = arr[i];
+        }
+        size += n;
+        arr = new_arr;
+    }
+    void push(T val)
+    {
+        if (top == UPPER_MAX - 1)
+        {
+            cout << "stack is overflow" << endl;
+            return;
+        }
+        if (top == size - 1)
+        {
+            inflate();
+        }
+        arr[++top] = val;
+    }
+    int isEmpty()
+    {
+        if (top == -1)
+        {
+            return 1;
+        }
+        return 0;
+    }
+    T pop()
+    {
+        if (isEmpty())
+        {
+            cout << "Underflow" << endl;
+        }
+
+        return arr[top--];
+    }
+    void display()
+    {
+        if (isEmpty())
+        {
+            cout << "stack is empty\n";
+            return;
+        }
+        for (int i = 0; i <= top; i++)
+        {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+
+    void display(int val)
+    {
+        if (isEmpty())
+        {
+            cout << "stack is empty\n";
+            return;
+        }
+        for (int i = 0; i <= top; i++)
+        {
+            cout << "Name : " << arr[i].name << " ";
+            cout << "employee_ID : " << arr[i].employee_ID << " ";
+            cout << "salary : " << arr[i].salary << " ";
+        }
+        cout << endl;
+    }
+    void merge(GrowingStack<T> &s1, GrowingStack<T> &s2)
+    {
+        inflate(s1.size + s2.size);
+        while (!s1.isEmpty() && !s2.isEmpty())
+        {
+            T k = s1.pop();
+            push(k);
+            k = s2.pop();
+            push(k);
+        }
+        while (!s1.isEmpty())
+        {
+            T k = s1.pop();
+            push(k);
+        }
+        while (!s2.isEmpty())
+        {
+            T k = s2.pop();
+            push(k);
+        }
+    }
+
+    ~GrowingStack<T>()
+    {
+        delete[] arr;
+    };
+};
+//driver program
+int main()
+{
+    GrowingStack<int> G1;
+    G1.push(9);
+    G1.push(34);
+    G1.push(5);
+    G1.push(4);
+    G1.push(7);
+    G1.push(58);
+    cout << "stack with int datatype : ";
+    G1.display();
+
+    GrowingStack<float> G2;
+    G2.push(9.45);
+    G2.push(34.47);
+    G2.push(5.47);
+    G2.push(4.47);
+    G2.push(7.47);
+    G2.push(58.47);
+    cout << "stack with float datatype : ";
+    G2.display();
+
+    GrowingStack<double> G3;
+    G3.push(9.678);
+    G3.push(34.678);
+    G3.push(5.678);
+    G3.push(4.678);
+    G3.push(7.678);
+    G3.push(58.678);
+    cout << "stack with double datatype : ";
+    G3.display();
+
+    GrowingStack<employee> G4;//for struct datatype
+    employee e1, e2;
+    e1.name = "Gourav";
+    e1.employee_ID = 20123;
+    e1.salary = 400000;
+    e2.name = "Vikash";
+    e2.employee_ID = 215778;
+    e2.salary = 200000;
+    G4.push(e1);
+    G4.push(e2);
+    cout << "stack with struct datatype : ";
+    G4.display(1);
+    return 0;
+}
+#endif
+#endif

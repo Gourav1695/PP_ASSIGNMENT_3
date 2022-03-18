@@ -1,0 +1,189 @@
+// 2020CSB010_GOURAV KUMAR SHAW
+
+#include <iostream>
+using namespace std;
+
+#ifndef UPPER_MAX
+#define UPPER_MAX 300 //setting the maximum value to inflate
+
+
+#ifndef STATING
+#define STATING 10      //this is the starting value 
+
+
+class GrowingStack
+{
+private:
+    /* data */
+    int top;
+    int size;
+    int *arr;
+
+public:
+    GrowingStack(/* args */) // default constructor
+    {
+        top = -1;
+        size = STATING;
+        arr = new int[STATING];
+    };
+    GrowingStack(int l) // parameterized constructor
+    {
+        top = -1;
+        size = l;
+        arr = new int[l];
+    };
+    GrowingStack(const GrowingStack &s) // copy constructor
+    {
+        top = s.top;
+        size = s.size;
+        int *new_array = new int[s.size];
+        int *c = new_array;
+        int *d = s.arr;
+        for (int i = 0; i < s.size; i++)
+        {
+            *c++ = *d++;
+        }
+        arr = s.arr;
+    }
+    GrowingStack &operator=(const GrowingStack &rhs) // assignment operator
+    {
+        if (this == &rhs)
+        {
+            return *this;
+        }
+        delete[] arr;
+        size = rhs.size;
+        top = rhs.top;
+        int *new_array = new int[rhs.size];
+        int *ptr = new_array;
+        int *prt_cpy = rhs.arr;
+        for (int i = 0; i < rhs.size; i++)
+        {
+            *ptr++ = *prt_cpy++;
+        }
+        arr = new_array;
+        return *this;
+    }
+    void inflate()
+    {
+        int *new_array = new int[size + STATING];
+        for (int i = 0; i < size; i++)
+        {
+            new_array[i] = arr[i];
+        }
+        size += STATING;
+        arr = new_array;
+    }
+    void inflate(int n)
+    {
+        int *new_array = new int[size + n];
+        for (int i = 0; i < size; i++)
+        {
+            new_array[i] = arr[i];
+        }
+        size += n;
+        arr = new_array;
+    }
+    void push(int val)
+    {
+        if (top == UPPER_MAX - 1)
+        {
+            cout << "stack is overflow" << endl;
+            return;
+        }
+        if (top == size - 1)
+        {
+            inflate();
+        }
+        arr[++top] = val;
+    }
+    int isEmpty()
+    {
+        if (top == -1)
+        {
+            return 1;
+        }
+        return 0;
+    }
+    int pop()
+    {
+        if (isEmpty())
+        {
+            cout << "stack is Underflow" << endl;
+        }
+
+        return arr[top--];
+    }
+    void display()
+    {
+        if (isEmpty())
+        {
+            cout << "stack is empty\n";
+            return;
+        }
+        for (int i = 0; i <= top; i++)
+        {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+    void merge(GrowingStack &s1, GrowingStack &s2)      //merging two stacks
+    {
+        inflate(s1.size + s2.size);
+        while (!s1.isEmpty() && !s2.isEmpty())
+        {
+            int k = s1.pop();
+            push(k);
+            k = s2.pop();
+            push(k);
+        }
+        while (!s1.isEmpty())
+        {
+            int k = s1.pop();
+            push(k);
+        }
+        while (!s2.isEmpty())
+        {
+            int k = s2.pop();
+            push(k);
+        }
+    }
+
+    ~GrowingStack()
+    {
+        delete[] arr;
+    };
+};
+int main()
+{
+    GrowingStack G1;
+    G1.push(9);
+    G1.push(34);
+    G1.push(5);
+    G1.push(4);
+    G1.push(7);
+    G1.push(58);
+    cout << "stack 1 is : ";
+    G1.display();
+
+    GrowingStack G2(G1); // copy constructor used
+    G1.push(45);
+    G1.push(3);
+    G1.push(8);
+    G1.push(99);
+
+    cout << "stack 2 using copy constructor : ";
+    G2.display();
+    GrowingStack G3;
+    G3.merge(G1, G2);
+    cout << "stack 3 ,the final stack after merging stack 1 and stack 2 :" ;
+    G3.display();
+
+    GrowingStack G4;
+    G4 = G3; // assignment operator used here
+    cout << "stack 4 , here we are using assignment operator :";
+    G4.display();
+    return 0;
+}
+#endif
+#endif
